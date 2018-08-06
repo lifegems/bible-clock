@@ -6,11 +6,11 @@ html, body {
 }
 
 /*
-#lit_quote {
+#quote {
 
 }
 */
-#lit_quote em {
+#quote em {
     font-weight: 900;
     color: rgb(19, 19, 19);
     font-style: normal
@@ -33,18 +33,9 @@ cite #book{
     font-style: normal;
 }
 
-#buttom {
-    height: 10px; 
-    width: 90%;
-    position: fixed; 
-    bottom:2%;
-    color: dimgray;
-    padding-left: 40px;
-    padding-right: 0px;
-
-}
-#buttom a, a:visited {
-    color: rgb(66, 66, 66)
+cite #quote_verse {
+    font-weight: 900;
+    color: rgb(19, 19, 19);
 }
 
 #github {
