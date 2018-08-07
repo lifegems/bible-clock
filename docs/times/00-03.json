@@ -1,14 +1,1 @@
-[
-  {
-    "verse": "00:03",
-    "quote": "For I rejoiced very much when brothers came and bore witness about the truth you hold, as you go on walking in the truth.",
-    "quote_verse": "3",
-    "book": "3 John"
-  },
-  {
-    "verse": "00:03",
-    "quote": "Beloved ones, although I was making every effort to write you about the salvation we hold in common, I found it necessary to write you to urge you to put up a hard fight for the faith that was once for all time delivered to the holy ones.",
-    "quote_verse": "3",
-    "book": "Jude"
- }
-]
+[{"verse":"00-03","book":"Jude","quote":"Beloved ones, although I was making every effort to write you about the salvation we hold in common, I found it necessary to write you to urge you to put up a hard fight for the faith that was once for all time delivered to the holy ones."},{"verse":"00-03","book":"Obadiah","quote":"The presumptuousness of your heart has deceived you, You who reside in the retreats of the crag, Dwelling in the height, saying in your heart, ‘Who will bring me down to the earth?’"}]
