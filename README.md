@@ -1,5 +1,6 @@
 # Bible Clock
-Clock using time quotes from the Bible, based on work and idea by
+Clock using chapter/verse quotes from the Bible, based on work and idea by
         [Jaap Meijers](http://www.eerlijkemedia.nl/) ([E-reader clock](https://www.instructables.com/id/Literary-Clock-Made-From-E-reader/)).
         
-The working site is in the docs/ folder, and can be visited at http://jenevoldsen.com/literature-clock/. To run it locally you may need to serve docs/ with an HTTP server (e.g. `python3 -m http.server`) ... or just open index.html in Firefox (thanks [@gbear605](https://github.com/gbear605)).
+The working site is in the docs/ folder, and can be visited at https://lifegems.github.io/bible-clock. 
+To run it locally you need to serve docs/ with an HTTP server (e.g. `npx http-server docs`) or just open index.html.
