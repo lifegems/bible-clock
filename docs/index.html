@@ -17,8 +17,7 @@
         <blockquote id="quote"></blockquote>
         <cite>
             -
-            <span id="book"></span>
-            <span id="verse"></span>,
+            <a id="link" href="#" target="onblank" title="Open in WATCHTOWER Online Library"><span id="book"></span> <span id="verse"></span></a>,
             <span id="translation">NWT 2013</span>
         </cite>
     </div>
@@ -58,6 +57,16 @@
             }
             return chapter + ":" + verse;
         }
+        function formatVerse(citation) {
+            // originally appears as ##-## (e.g. 08-12, 10-24)
+            var chVerse = citation.split('-');
+            var chapter = stripLeadingZero(chVerse[0]);
+            var verse = stripLeadingZero(chVerse[1]);
+            return parseInt(chapter) + ":" + parseInt(verse);
+        }
+        function getWOLLink(search) {
+            return "https://wol.jw.org/en/wol/l/r1/lp-e?q=" + encodeURIComponent(search);
+        }
         function startTime() {
             var today = new Date();
             if(current_date !== undefined
@@ -80,6 +89,7 @@
             //document.getElementById('time').innerHTML = timeCode;     // Show time
             try {
                 document.getElementById('quote').innerHTML       = lit_json_single.quote;
+                $('#link').attr('href', getWOLLink(lit_json_single.book + " " + formatVerse(lit_json_single.verse)));
                 document.getElementById('book').innerHTML        = lit_json_single.book;
                 document.getElementById('verse').innerHTML       = formatVerse(lit_json_single.verse);
                 document.getElementById('quote').style.fontSize = ((6.000864 - 0.01211676 * quote_len + 0.00001176814 * quote_len ** 2 - 1.969435e-9 * quote_len ** 3) + "vw");
