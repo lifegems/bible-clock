@@ -40,15 +40,16 @@ csv({delimiter: '|'})
          if (!formatted.hasOwnProperty(citation.chapter)) {
             formatted[citation.chapter] = [];
          }
-         if (formatted[citation.chapter].indexOf(citation.verse) === -1) {
-            formatted[citation.chapter].push(citation.verse);
-         }
+        formatted[citation.chapter].push(citation.verse);
       });
+      var totalVerses = data.length;
       data = []; // clearing the object to help with memory
-      var totalVerses = 0;
+      var totalUniqueVerses = 0;
       Object.keys(formatted).forEach(chapter => {
-         totalVerses += formatted[chapter].length;
-         console.log(chapter + ': ' + formatted[chapter].length + '/60 - ' + getPercentage(formatted[chapter].length, 60));
+         var uniqueVerses = formatted[chapter].filter((v, i, a) => a.indexOf(v) === i).length;
+         totalUniqueVerses += uniqueVerses;
+         console.log(chapter + ': ' + formatted[chapter].length + ' - ' + uniqueVerses + '/60 - ' + getPercentage(uniqueVerses, 60));
       });
-      console.log("Total Progress: " + totalVerses + '/1440 - ' + getPercentage(totalVerses, 1440));
+      console.log("Unique Verses: " + totalUniqueVerses + '/1440 - ' + getPercentage(totalUniqueVerses, 1440));
+      console.log("Total Verses:", totalVerses);
    });
