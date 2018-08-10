@@ -9,7 +9,7 @@
     <title>Bible Clock</title>
 </head>
 
-<body onload="startTime()">
+<body onload="main()">
     <div id="overlay"></div>
 
     <div id="time"></div>
@@ -32,6 +32,7 @@
         var current_date;
         var running_seconds;
         var current_seconds = "00.0";
+        var static;
 
         function loadFile(timeStamp) {
             var text = {};
@@ -88,16 +89,17 @@
             setSecondsOverlay(now.getSeconds(), now.getMilliseconds());
             requestAnimationFrame(runSecondsMachine);
         }
-        function startTime() {
+        function startTime(load) {
             // if (running_seconds === undefined) {
             //     running_seconds = true;
             //     runSecondsMachine();
             // }
+
             var today = new Date();
             if(current_date !== undefined
                 && current_date.getMinutes() === today.getMinutes() ) {
                 var t = setTimeout(startTime, 1000);
-                return;
+                if (!load) return;
             }
 
             current_date = today;
@@ -105,8 +107,17 @@
             var m = today.getMinutes();
             h = checkTime(h);
             m = checkTime(m);
-
             var timeCode = h + "-" + m;
+
+            setScreen(timeCode);
+            window.location.hash = timeCode;
+            var t = setTimeout(startTime, 1000);
+        }
+        function checkTime(i) {
+            if (i < 10) { i = "0" + i };
+            return i;
+        }
+        function setScreen(timeCode) {
             var lit_json = loadFile(timeCode);
             var lit_json_single = lit_json[Math.floor(Math.random() * lit_json.length)]
 
@@ -128,12 +139,20 @@
             } catch (e) {
                 console.log(e);
             }
-
-            var t = setTimeout(startTime, 1000);
         }
-        function checkTime(i) {
-            if (i < 10) { i = "0" + i };
-            return i;
+        function main() {
+            var hash = window.location.hash.substr(1);
+            if (hash.indexOf('/static') > -1) {
+                var timeCode = hash.substr(0, 5);
+                setScreen(timeCode);
+            } else if (hash.match('[0-9]{2}-[0-9]{2}')) {
+                var timeCode = hash.substr(0, 5);
+                setScreen(timeCode);
+                startTime();
+            } else {
+                startTime(true);
+            }
+            window.onhashchange = main;
         }
     </script>
 </body>
