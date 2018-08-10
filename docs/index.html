@@ -117,35 +117,48 @@
             if (i < 10) { i = "0" + i };
             return i;
         }
+        function validateTimeCode(timeCode) {
+            if (!timeCode.match('[0-9]{2}-[0-9]{2}')) {
+                return '00-00';
+            }
+            aTimeCode = timeCode.split('-');
+            var hour    = parseInt(aTimeCode[0]);
+            var minutes = parseInt(aTimeCode[1]);
+            if (hour > 23 || hour < 0 || minutes < 0 || minutes > 59) {
+                return '00-00';
+            }
+            return timeCode;
+        }
         function setScreen(timeCode) {
+            timeCode = validateTimeCode(timeCode);
             var lit_json = loadFile(timeCode);
             var lit_json_single = lit_json[Math.floor(Math.random() * lit_json.length)]
 
             var quote_len = (lit_json_single.quote).length
             //document.getElementById('time').innerHTML = timeCode;     // Show time
             try {
+                if (timeCode === "00-00") {
+                    var chapter = parseInt(timeCode.substr(0, 2));
+                    var verse = timeCode.substr(3, 2);
+                    $('#quote').html(lit_json_single.quote);
+                    $('#noVerse').html("* There is no bible book with chapter and verse <b>" + chapter + ":" + verse + "</b>");
+                    $('#citation').hide();
+                    return;
+                }
+                $('#noVerse').html("");
+                $('#citation').show();
                 $('#quote').html(lit_json_single.quote);
                 $('#link').attr('href', getWOLLink(lit_json_single.book + " " + formatVerse(lit_json_single.verse)));
                 $('#book').html(lit_json_single.book);
                 $('#verse').html(formatVerse(lit_json_single.verse));
                 $('#quote').css("fontSize", ((6.000864 - 0.01211676 * quote_len + 0.00001176814 * quote_len ** 2 - 1.969435e-9 * quote_len ** 3) + "vw"));
-                if (timeCode === "00-00") {
-                    var chapter = parseInt(timeCode.substr(0, 2));
-                    var verse = timeCode.substr(3, 2);
-                    $('#noVerse').html("* There is no bible book with chapter and verse <b>" + chapter + ":" + verse + "</b>");
-                    $('#citation').hide();
-                }
-
             } catch (e) {
                 console.log(e);
             }
         }
         function main() {
             var hash = window.location.hash.substr(1);
-            if (hash.indexOf('/static') > -1) {
-                var timeCode = hash.substr(0, 5);
-                setScreen(timeCode);
-            } else if (hash.match('[0-9]{2}-[0-9]{2}')) {
+            if (hash.match('[0-9]{2}-[0-9]{2}')) {
                 var timeCode = hash.substr(0, 5);
                 setScreen(timeCode);
                 startTime();
