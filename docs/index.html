@@ -137,7 +137,7 @@
             var quote_len = (lit_json_single.quote).length
             //document.getElementById('time').innerHTML = timeCode;     // Show time
             try {
-                if (timeCode === "00-00") {
+                if (timeCode === "00-00" || lit_json_single.book === "") {
                     var chapter = parseInt(timeCode.substr(0, 2));
                     var verse = timeCode.substr(3, 2);
                     $('#quote').html(lit_json_single.quote);
