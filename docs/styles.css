@@ -54,3 +54,10 @@ cite #verse {
     border-right-width: 2px;
     border-right-color: dimgray;
 }
+
+div#overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 0%;
+    height: 100%;
+    position: absolute;
+}

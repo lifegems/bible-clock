@@ -10,14 +10,19 @@
 </head>
 
 <body onload="startTime()">
+    <div id="overlay"></div>
 
     <div id="time"></div>
 
     <div id="main_text">
         <blockquote id="quote"></blockquote>
-        <cite>
+        <p id="noVerse"></p>
+        <cite id="citation">
             -
-            <a id="link" href="#" target="onblank" title="Open in WATCHTOWER Online Library"><span id="book"></span> <span id="verse"></span></a>,
+            <a id="link" href="#" target="onblank" title="Open in WATCHTOWER Online Library">
+                <span id="book"></span>
+                <span id="verse"></span>
+            </a>,
             <span id="translation">NWT 2013</span>
         </cite>
     </div>
@@ -25,6 +30,8 @@
 
     <script>
         var current_date;
+        var running_seconds;
+        var current_seconds = "00.0";
 
         function loadFile(timeStamp) {
             var text = {};
@@ -67,7 +74,25 @@
         function getWOLLink(search) {
             return "https://wol.jw.org/en/wol/l/r1/lp-e?q=" + encodeURIComponent(search);
         }
+        function setSecondsOverlay(s, m) {
+            var time = parseFloat(s + "." + m);
+            var percent = ((time / 60) * 100).toFixed(1);
+            if (percent > current_seconds || (current_seconds - 80) > percent) {
+                current_seconds = percent;
+                $('#overlay').width(current_seconds + "%");
+                console.log(current_seconds);
+            }
+        }
+        function runSecondsMachine() {
+            var now = new Date();
+            setSecondsOverlay(now.getSeconds(), now.getMilliseconds());
+            requestAnimationFrame(runSecondsMachine);
+        }
         function startTime() {
+            // if (running_seconds === undefined) {
+            //     running_seconds = true;
+            //     runSecondsMachine();
+            // }
             var today = new Date();
             if(current_date !== undefined
                 && current_date.getMinutes() === today.getMinutes() ) {
@@ -88,11 +113,17 @@
             var quote_len = (lit_json_single.quote).length
             //document.getElementById('time').innerHTML = timeCode;     // Show time
             try {
-                document.getElementById('quote').innerHTML       = lit_json_single.quote;
+                $('#quote').html(lit_json_single.quote);
                 $('#link').attr('href', getWOLLink(lit_json_single.book + " " + formatVerse(lit_json_single.verse)));
-                document.getElementById('book').innerHTML        = lit_json_single.book;
-                document.getElementById('verse').innerHTML       = formatVerse(lit_json_single.verse);
-                document.getElementById('quote').style.fontSize = ((6.000864 - 0.01211676 * quote_len + 0.00001176814 * quote_len ** 2 - 1.969435e-9 * quote_len ** 3) + "vw");
+                $('#book').html(lit_json_single.book);
+                $('#verse').html(formatVerse(lit_json_single.verse));
+                $('#quote').css("fontSize", ((6.000864 - 0.01211676 * quote_len + 0.00001176814 * quote_len ** 2 - 1.969435e-9 * quote_len ** 3) + "vw"));
+                if (timeCode === "00-00") {
+                    var chapter = parseInt(timeCode.substr(0, 2));
+                    var verse = timeCode.substr(3, 2);
+                    $('#noVerse').html("* There is no bible book with chapter and verse <b>" + chapter + ":" + verse + "</b>");
+                    $('#citation').hide();
+                }
 
             } catch (e) {
                 console.log(e);
