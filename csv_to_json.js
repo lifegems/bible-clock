@@ -21,6 +21,17 @@ function generatePlaceholders() {
    });
 }
 
+function combineBookNames(aBooks) {
+   if (aBooks.length === 1) {
+      return aBooks[0];
+   } else if (aBooks.length === 2) {
+      return aBooks[0] + ' and ' + aBooks[1];
+   }
+   var lastBook = aBooks[aBooks.length - 1];
+   aBooks.pop();
+   return aBooks.join(', ') + " and " + lastBook;
+}
+
 function generateVerseData() {
    csv({delimiter: '|'})
       .fromFile(csvFile)
@@ -33,9 +44,32 @@ function generateVerseData() {
             formatted[passage.verse].push(passage);
          });
          data = []; // clearing the object to help with memory
+         var hours = {};
          Object.keys(formatted).forEach(time => {
             var passages = formatted[time];
             fs.writeFileSync('docs/times/' + time + '.json', JSON.stringify(passages));
+
+            var aTime = time.split('-');
+            var hour = aTime[0];
+            if (!hours.hasOwnProperty(hour)) {
+               hours[hour] = [];
+            }
+            books = passages.map(passage => passage.book);
+            books.forEach(book => {
+               if (hours[hour].indexOf(book) === -1) {
+                  hours[hour].push(book);
+               }
+            });
+         });
+         Object.keys(hours).forEach(hour => {
+            var time = hour + '-00';
+            books = combineBookNames(hours[hour]);
+            var text = (hours[hour].length > 1) ? 's of ' : ' of ';
+            fs.writeFileSync('docs/times/' + time + '.json', JSON.stringify([{
+               verse: time,
+               quote: 'During the next hour, you will see quotes from the Bible Book' + text + books,
+               book: ''
+            }]));
          });
       });
 }
