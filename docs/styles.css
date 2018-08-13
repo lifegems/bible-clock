@@ -61,3 +61,27 @@ div#overlay {
     height: 100%;
     position: absolute;
 }
+
+.list--verse {
+    list-style: none;
+    color: #444444;
+    width: 100px;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.list--verse:hover {
+    background-color: #DDDDDD;
+    cursor: pointer;
+}
+
+.list--verse-selected {
+    background-color: #CCCCCC;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.list--verse-selected:hover {
+    background-color: #CCCCCC;
+    cursor: inherit;
+}
