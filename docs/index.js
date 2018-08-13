@@ -101,11 +101,11 @@ function validateTimeCode(timeCode) {
 function updateScreen(objVerse) {
    var quote_len = (objVerse.quote).length;
    try {
-         if (objVerse.verse === "00-00" || objVerse.book === "") {
+         if (objVerse.book === "") {
             var chapter = parseInt(objVerse.verse.substr(0, 2));
             var verse = objVerse.verse.substr(3, 2);
             $('#quote').html(objVerse.quote);
-            $('#noVerse').html("* There is no bible book with chapter and verse <b>" + chapter + ":" + verse + "</b>");
+            $('#noVerse').html("* There is no bible book with chapter and verse <b>" + formatVerse(objVerse.verse) + "</b>");
             $('#citation').hide();
             return;
          }

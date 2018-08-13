@@ -12,10 +12,11 @@ function generatePlaceholders() {
          hours.push(count.toString().substring(1));
       }
    }
-   var placeholder = [{"verse":"00-00","book":"","quote":"The New World Translation of the Holy Scriptures&#42;"}];
+   var placeholder = [{"verse":"","book":"","quote":"The New World Translation of the Holy Scriptures&#42;"}];
    hours.forEach(hour => {
       minutes.forEach(minute => {
          file = hour + "-" + minute + ".json";
+         placeholder[0]['verse'] = hour + "-" + minute;
          fs.writeFileSync('docs/times/' + file, JSON.stringify(placeholder));
       });
    });
