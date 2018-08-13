@@ -34,13 +34,6 @@ function formatVerse(citation) {
    }
    return chapter + ":" + verse;
 }
-function formatVerse(citation) {
-   // originally appears as ##-## (e.g. 08-12, 10-24)
-   var chVerse = citation.split('-');
-   var chapter = stripLeadingZero(chVerse[0]);
-   var verse = stripLeadingZero(chVerse[1]);
-   return parseInt(chapter) + ":" + parseInt(verse);
-}
 function getWOLLink(search) {
    return "https://wol.jw.org/en/wol/l/r1/lp-e?q=" + encodeURIComponent(search);
 }
