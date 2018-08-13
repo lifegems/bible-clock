@@ -101,23 +101,23 @@ function validateTimeCode(timeCode) {
 function updateScreen(objVerse) {
    var quote_len = (objVerse.quote).length;
    try {
-         if (objVerse.book === "") {
-            var chapter = parseInt(objVerse.verse.substr(0, 2));
-            var verse = objVerse.verse.substr(3, 2);
-            $('#quote').html(objVerse.quote);
-            $('#noVerse').html("* There is no bible book with chapter and verse <b>" + formatVerse(objVerse.verse) + "</b>");
-            $('#citation').hide();
-            return;
-         }
-         $('#noVerse').html("");
-         $('#citation').show();
+      if (objVerse.book === "") {
+         var chapter = parseInt(objVerse.verse.substr(0, 2));
+         var verse = objVerse.verse.substr(3, 2);
          $('#quote').html(objVerse.quote);
-         $('#link').attr('href', getWOLLink(objVerse.book + " " + formatVerse(objVerse.verse)));
-         $('#book').html(objVerse.book);
-         $('#verse').html(formatVerse(objVerse.verse));
-         $('#quote').css("fontSize", ((6.000864 - 0.01211676 * quote_len + 0.00001176814 * quote_len ** 2 - 1.969435e-9 * quote_len ** 3) + "vw"));
+         $('#noVerse').html("* There is no bible book with chapter and verse <b>" + formatVerse(objVerse.verse) + "</b>");
+         $('#citation').hide();
+         return;
+      }
+      $('#noVerse').html("");
+      $('#citation').show();
+      $('#quote').html(objVerse.quote);
+      $('#link').attr('href', getWOLLink(objVerse.book + " " + formatVerse(objVerse.verse)));
+      $('#book').html(objVerse.book);
+      $('#verse').html(formatVerse(objVerse.verse));
+      $('#quote').css("fontSize", ((6.000864 - 0.01211676 * quote_len + 0.00001176814 * quote_len ** 2 - 1.969435e-9 * quote_len ** 3) + "vw"));
    } catch (e) {
-         console.log(e);
+      console.log(e);
    }
 }
 function clickVerse(event) {
