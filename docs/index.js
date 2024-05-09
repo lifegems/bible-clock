@@ -2,18 +2,22 @@ var current_date;
 var running_seconds;
 var current_seconds = "00.0";
 var static;
+var bibleChapters;
 
-function loadFile(timeStamp) {
+function loadBibleChapters() {
+   return loadJson("bible-info/bible-chapters.json");
+}
+function loadTimeFile(timeStamp) {
+   var path = "times/" + timeStamp + ".json";
+   return loadJson(path);
+}
+function loadJson(url) {
    var text = {};
-   $.ajaxSetup({
-         async: false
-   });
-   $.getJSON("times/" + timeStamp + ".json", function (json) {
+   $.ajaxSetup({ async: false });
+   $.getJSON(url, function (json) {
          text = json;
    });
-   $.ajaxSetup({
-         async: true
-   });
+   $.ajaxSetup({ async: true });
    return (text);
 }
 function stripLeadingZero(citation) {
@@ -91,23 +95,27 @@ function validateTimeCode(timeCode) {
    }
    return timeCode;
 }
+function getChapter(timeCode) {
+   var aTimeCode = timeCode.split('-');
+   return parseInt(aTimeCode[0]);
+}
+function getVerse(timeCode) {
+   var aTimeCode = timeCode.split('-');
+   return parseInt(aTimeCode[1]);
+}
+
 function updateScreen(objVerse) {
-   var quote_len = (objVerse.quote).length;
+   let currentChapter = objVerse.chapters[0].chapterNum;
+   let currentVerse = objVerse.chapters[0].selectedVerse;
+   var VERSE_URL = "https://scrp.vercel.app/api/ref?verse=" + encodeURI(formatBookChapterVerse(objVerse.name, currentChapter, currentVerse));
+   objVerse.data = loadJson(VERSE_URL);
+   var quote_len = (objVerse.data.text).length;
    try {
-      if (objVerse.book === "") {
-         var chapter = parseInt(objVerse.verse.substr(0, 2));
-         var verse = objVerse.verse.substr(3, 2);
-         $('#quote').html(objVerse.quote);
-         $('#noVerse').html("* There is no bible book with chapter and verse <b>" + formatVerse(objVerse.verse) + "</b>");
-         $('#citation').hide();
-         return;
-      }
       $('#noVerse').html("");
       $('#citation').show();
-      $('#quote').html(objVerse.quote);
-      $('#link').attr('href', getWOLLink(objVerse.book + " " + formatVerse(objVerse.verse)));
-      $('#book').html(objVerse.book);
-      $('#verse').html(formatVerse(objVerse.verse));
+      $('#quote').html(objVerse.data.text);
+      $('#link').attr('href', getWOLLink(objVerse.data.citation));
+      $('#verse').html(objVerse.data.citation);
       $('#quote').css("fontSize", ((6.000864 - 0.01211676 * quote_len + 0.00001176814 * quote_len ** 2 - 1.969435e-9 * quote_len ** 3) + "vw"));
    } catch (e) {
       console.log(e);
@@ -120,26 +128,60 @@ function clickVerse(event) {
    $verse.addClass('list--verse-selected');
    updateScreen(verse);
 }
-function setScreen(timeCode) {
-   timeCode = validateTimeCode(timeCode);
-   var lit_json = loadFile(timeCode);
-   var lit_json_single = lit_json[Math.floor(Math.random() * lit_json.length)];
+
+function formatBookChapterVerse(book, chapter, verse) {
+   return book + " " + chapter + ":" + verse;
+}
+
+function setScreen(timeCode, index = 0) {
+   let currentChapter = getChapter(timeCode);
+   currentChapter = (currentChapter == 0) ? 119 : currentChapter;
+   let currentVerse = getVerse(timeCode);
+   currentVerse = (currentVerse == 0) ? 60 : currentVerse;
+   let verseOptions = listVerseOptions(currentChapter, currentVerse);
+   if (verseOptions.length == 0) {
+      currentChapter = 78;
+      verseOptions = listVerseOptions(currentChapter, currentVerse);
+   }
+   // let selectedVerse = verseOptions[0]; //LAST: [verseOptions.length - 1]; // FIRST
+   // let selectedVerse = verseOptions[verseOptions.length - 1]; // LAST
+   let selectedVerse = verseOptions[Math.floor(Math.random() * verseOptions.length)]; // RANDOM
+
+   var VERSE_URL = "https://scrp.vercel.app/api/ref?verse=" + encodeURI(formatBookChapterVerse(selectedVerse.name, currentChapter, currentVerse));
+   var VERSE_INFO = loadJson(VERSE_URL);
+   selectedVerse.data = VERSE_INFO;
 
    var $verses = $('#otherVerses');
    $verses.empty();
-   lit_json.forEach(verse => {
+   verseOptions.forEach(verse => {
          var $verse = $("<li></li>");
          $verse.addClass('list--verse');
          $verse.attr('data--click', JSON.stringify(verse));
          $verse.click(clickVerse);
-         if (verse.book === lit_json_single.book) {
+         if (verse.name === selectedVerse.name) {
             $verse.addClass('list--verse-selected');
          }
-         $verse.html(verse.book);
+         $verse.html(verse.name);
          $verses.append($verse);
    });
 
-   updateScreen(lit_json_single);
+   updateScreen(selectedVerse);
+}
+
+function listVerseOptions(currentChapter = 1, currentVerse = 1) {
+   bibleChapters = loadBibleChapters();
+   let verseOptions = bibleChapters
+      .filter(book => book.chapters.length >= currentChapter)
+      .map(book => ({
+         name: book.name, 
+         number: book.number, 
+         chapters: book.chapters
+            .map((ch,i) => ({chapterNum: i + 1, verses: ch, selectedVerse: currentVerse}))
+            .filter(ch => ch.verses >= currentVerse)
+            .filter(ch => ch.chapterNum == currentChapter)
+      }))
+      .filter(book => book.chapters.length > 0);
+      return verseOptions;
 }
 function main() {
    var hash = window.location.hash.substr(1);
