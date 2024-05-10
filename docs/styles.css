@@ -62,10 +62,15 @@ div#overlay {
     position: absolute;
 }
 
+#otherVerses {
+    overflow-y: auto;
+    height: 20em;
+    width: 10em;
+}
+
 .list--verse {
     list-style: none;
     color: #444444;
-    width: 100px;
     padding: 3px;
     border-radius: 2px;
 }

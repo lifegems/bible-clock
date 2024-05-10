@@ -147,7 +147,8 @@ function setScreen(timeCode, index = 0) {
    // let selectedVerse = verseOptions[verseOptions.length - 1]; // LAST
    let selectedVerse = verseOptions[Math.floor(Math.random() * verseOptions.length)]; // RANDOM
 
-   var VERSE_URL = "https://scrp.vercel.app/api/ref?verse=" + encodeURI(formatBookChapterVerse(selectedVerse.name, currentChapter, currentVerse));
+   // var VERSE_URL = "https://scrp.vercel.app/api/ref?verse=" + encodeURI(formatBookChapterVerse(selectedVerse.name, currentChapter, currentVerse));
+   var VERSE_URL = "https://localhost:3000/api/ref?verse=" + encodeURI(formatBookChapterVerse(selectedVerse.name, currentChapter, currentVerse));
    var VERSE_INFO = loadJson(VERSE_URL);
    selectedVerse.data = VERSE_INFO;
 
