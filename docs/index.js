@@ -130,6 +130,8 @@ function clickVerse(event) {
 }
 
 function formatBookChapterVerse(book, chapter, verse) {
+   const spacing = decodeURI("%C2%A0");
+   book = book.replaceAll(spacing, " ");
    return book + " " + chapter + ":" + verse;
 }
 
